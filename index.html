@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TuneSpec">
+<meta name="theme-color" content="#0a0a0a">
+<title>TuneSpec</title>
+<style>
+:root{--bg:#0a0a0a;--surface:#151515;--surface2:#1e1e1e;--border:#2a2a2a;--text:#e8e8e8;--text2:#888;--accent:#ff6b35;--green:#4caf50;--input-bg:#111;--rwd:#ff6b35;--awd:#ffd600;--fwd:#00d4ff;--na:#ef4444}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;overflow-x:hidden}
+.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top))}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px}.logo span{color:var(--accent)}
+.drive-tabs{display:flex;gap:6px}
+.drive-tab{flex:1;padding:10px 0;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--surface);color:var(--text2);letter-spacing:.5px}
+.drive-tab.active-rwd{background:var(--rwd);color:#000}
+.drive-tab.active-awd{background:var(--awd);color:#000}
+.drive-tab.active-fwd{background:var(--fwd);color:#000}
+.progress-bar{margin-top:6px;height:3px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
+.progress-text{font-size:11px;color:var(--text2)}
+.content{padding:8px 12px 120px}
+.category{margin-bottom:6px;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.category-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.category-header:active{background:var(--surface2)}
+.category-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2)}
+.category-chevron{font-size:12px;color:var(--text2);transition:transform .2s}
+.category.open .category-chevron{transform:rotate(180deg)}
+.category-body{display:none;padding:0 10px 10px}
+.category.open .category-body{display:block}
+.field-row{display:flex;align-items:center;padding:7px 4px;border-bottom:1px solid var(--border);gap:4px}
+.field-row:last-child{border-bottom:none}
+.field-label{flex:1;font-size:14px;color:var(--text);line-height:1.2}
+.field-unit{font-size:11px;color:var(--text2);min-width:24px;text-align:right}
+.field-input{width:68px;padding:8px 4px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:16px;text-align:center;font-weight:600;font-family:'SF Mono','Menlo',monospace;-webkit-appearance:none;appearance:none}
+.field-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.15)}
+.field-input::placeholder{color:#444;font-weight:400}
+.field-input.is-na{background:#1a0a0a;border-color:var(--na);color:var(--na);font-size:13px;font-family:-apple-system,sans-serif;width:68px}
+.na-btn{width:32px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.na-btn:active{transform:scale(.93)}
+.na-btn.active{background:var(--na);color:#fff;border-color:var(--na)}
+.pm-btn{width:28px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:18px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0}
+.pm-btn:active{transform:scale(.9);background:var(--accent);color:#000}
+.field-select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:14px;font-weight:600;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.field-select:focus{outline:none;border-color:var(--accent)}
+.custom-input{margin-top:6px;width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:14px;font-weight:600;display:none}
+.custom-input.show{display:block}
+.custom-input:focus{outline:none;border-color:var(--accent)}
+.swap-row{padding:10px 4px;border-bottom:1px solid var(--border)}
+.swap-row:last-child{border-bottom:none}
+.swap-label{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.class-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.class-chip{padding:10px 0;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--text2);font-size:13px;font-weight:700;text-align:center;cursor:pointer;transition:all .12s}
+.class-chip:active{transform:scale(.95)}
+.class-chip.selected{background:var(--accent);color:#000;border-color:var(--accent)}
+.class-range{font-size:10px;font-weight:400;display:block;margin-top:2px;opacity:.7}
+.perf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.perf-item{display:flex;flex-direction:column;gap:4px}
+.perf-label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.perf-input{padding:8px 6px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:15px;text-align:center;font-weight:600;font-family:'SF Mono','Menlo',monospace;-webkit-appearance:none;appearance:none}
+.perf-input:focus{outline:none;border-color:var(--accent)}
+.perf-input::placeholder{color:#444;font-weight:400;font-size:11px}
+.perf-input.is-na{background:#1a0a0a;border-color:var(--na);color:var(--na);font-size:12px;font-family:-apple-system,sans-serif}
+.perf-na{font-size:9px;color:var(--text2);text-align:center;cursor:pointer;margin-top:2px;text-decoration:underline}
+.perf-na.active{color:var(--na)}
+/* Instruction block */
+.instr-area{width:100%;min-height:100px;padding:10px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:'SF Mono','Menlo',monospace;resize:vertical;-webkit-appearance:none}
+.instr-area:focus{outline:none;border-color:var(--accent)}
+.instr-actions{display:flex;gap:6px;margin-top:8px}
+.instr-btn{flex:1;padding:10px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .12s}
+.instr-btn:active{transform:scale(.97)}
+.instr-btn-copy{background:var(--green);color:#000}
+.instr-btn-archive{background:var(--surface2);color:var(--text2)}
+.instr-btn-restore{background:var(--surface2);color:var(--text2)}
+.archive-list{margin-top:8px;max-height:200px;overflow-y:auto}
+.archive-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
+.archive-item button{background:var(--accent);color:#000;border:none;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer}
+.action-bar{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--border);display:flex;gap:10px;z-index:100;transition:transform .2s}
+.action-bar.hidden{transform:translateY(100%)}
+.btn{flex:1;padding:14px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.btn:active{transform:scale(.97)}
+.btn-clear{background:var(--surface2);color:var(--text2);flex:.4}
+.btn-export{background:var(--accent);color:#000}
+.btn-copy{background:var(--green);color:#000;flex:.5}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:var(--green);color:#000;padding:16px 28px;border-radius:12px;font-weight:700;font-size:16px;opacity:0;pointer-events:none;transition:all .25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.toolbar{display:flex;justify-content:flex-end;padding:8px 4px 4px;gap:12px}
+.toolbar-btn{background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:4px 0}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div class="logo">Tune<span>Spec</span></div>
+    <span class="progress-text" id="progressText">0 / 0</span>
+  </div>
+  <div class="drive-tabs">
+    <button class="drive-tab" onclick="setDrive('rwd')">RWD</button>
+    <button class="drive-tab" onclick="setDrive('awd')">AWD</button>
+    <button class="drive-tab" onclick="setDrive('fwd')">FWD</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+<div class="content" id="content"></div>
+<div class="action-bar">
+  <button class="btn btn-clear" onclick="clearAll()">Clear</button>
+  <button class="btn btn-copy" onclick="copyToClipboard()">Copy</button>
+  <button class="btn btn-export" onclick="exportCSV()">Export</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// ═══ CAR LIST: In-game code (real name) ═══
+const CARS=[
+// Nissan / Datsun
+'S13 (Nissan Silvia S13)','S14 (Nissan Silvia S14)','S15 (Nissan Silvia S15)','S18 (Nissan 180SX)','32R (Nissan Skyline GT-R R32)','33R (Nissan Skyline GT-R R33)','34R (Nissan Skyline GT-R R34)','Z31 (Nissan 300ZX Z31)','30Z (Nissan 300ZX Z32)','Z37 (Nissan 370Z)','Z40 (Nissan Z 2023)','FLD (Datsun 240Z/280Z)','DTS (Datsun 620 Truck)','STG (Nissan Stagea)',
+// Toyota
+'E86 (Toyota AE86 Trueno)','R86 (Toyota GR86/GT86)','S80 (Toyota Supra Mk4 A80)','S90C (Toyota Supra Mk5 A90)','TM2 (Toyota Mark II)','CRT (Toyota Cresta)','GRC (Toyota GR Corolla Morizo)','YRS (Toyota GR Yaris)',
+// Honda
+'HC6 (Honda Civic EG6)','HC9 (Honda Civic Type R EK9)','HCR (Honda Civic Type R FK8)','H15 (Honda Integra Type R DC5)','HS2 (Honda S2000)','HSX (Acura NSX NA1)',
+// Mazda
+'NX5 (Mazda MX-5 NA)','NX5C (Mazda MX-5 NA Coupe)','FX7 (Mazda RX-7 FC)','DX7 (Mazda RX-7 FD)','DX8 (Mazda RX-8)',
+// Mitsubishi
+'ECL (Mitsubishi Eclipse 2G)','EV6 (Mitsubishi Lancer Evo VI)','EV9 (Mitsubishi Lancer Evo IX)','EVX (Mitsubishi Lancer Evo X)',
+// Subaru
+'SFR (Subaru BRZ)',
+// Suzuki
+'SZK (Suzuki Carry K-Truck)',
+// BMW
+'M30 (BMW M3 E30)','E36 (BMW M3 E36)','M46 (BMW M3 E46)','M92 (BMW M3 GTS E92)','M92C (BMW M3 Convertible E92)','MG3 (BMW M3 Touring G81)','M4R (BMW M4 F82)','M4G (BMW M4 G82)','M34 (BMW M3/M4 G80/G82)','BM2 (BMW M2 F87)','BM2R (BMW M2 G87 2023)','M39 (BMW M5 Touring E39)','M60 (BMW M5 E60)','M90 (BMW M5 CS F90)','B31 (BMW 850CSi)','B81 (BMW i8)','BX5 (BMW X5 M)','BZ4 (BMW Z4)',
+// Audi
+'AR8 (Audi R8)','6RS (Audi RS6 Avant)','7RS (Audi RS7)','TTR (Audi TT RS)',
+// Mercedes
+'63C (Mercedes-AMG C63 S)','MGT (Mercedes-AMG GT R)','MGTC (Mercedes-AMG GT S Roadster)','GLW (Mercedes-AMG G65)','B19 (Mercedes 190E)',
+// Aston Martin
+'AMV (Aston Martin Vantage)',
+// Porsche
+'PGT (Porsche 911 GT3)',
+// Volkswagen
+'V7G (VW Golf GTI Mk7)',
+// Lamborghini
+'LMA (Lamborghini Huracan)','LMD (Lamborghini Diablo VT)','LMH (Lamborghini Huracan RWD)','LMM (Lamborghini Murcielago)',
+// Lexus / Lotus
+'LFL (Lexus LFA)','LTS (Lotus Exige)',
+// McLaren
+'MLN (McLaren 720S)',
+// Jaguar / Infiniti
+'JGR (Jaguar F-Type R)','IF6 (Infiniti Q60)',
+// American
+'C70 (Chevrolet Camaro 1970)','CMR (Chevrolet Camaro SS 2016)','CVL (Chevrolet Chevelle SS 1970)','CC3 (Chevrolet Corvette C3)','CC6 (Chevrolet Corvette Z06 C6)','CC7 (Chevrolet Corvette Z06 C7)','CHR (Dodge Charger 1970)','DC2 (Dodge Charger SRT Hellcat)','STR (Dodge Challenger SRT)','VP1 (Dodge Viper SRT10)','VPR (Dodge Viper ACR)','VAN (Dodge Ram Van)','F69 (Ford Mustang Mach 1 1969)','F35 (Ford Shelby GT350R)','S65 (Ford Mustang Dark Horse)','FST (Ford Focus ST)','FGT (Ford GT)','HNG (Hoonicorn Mustang)','HRD (Hot Rod Truck)',
+// Other
+'HSS (HSV Maloo R8)','L08 (Lada Samara)','MCS (MINI JCW)',
+'Custom'
+];
+const ENGINES=['Stock','RS20','BR26','HQ37','JZ2-GT','LSS','HI5','M90','RV38','B28','FV8','V12','Custom'];
+const TRANSMISSIONS=['Stock','T50 5spd','T60 6spd','T50S 6spd (Sport)','T70 7spd (Sport)','Custom'];
+const BODIES=['Stock','Stage 1','Stage 2','Stage 3','Stage 4'];
+const TIRE_COMPOUNDS=['Street','Street+','Sport','Racing','Racing+'];
+const FUEL_TYPES=['Regular','Racing (Sport)'];
+const CLASSES=[{id:'C1',range:'0-149'},{id:'C2',range:'150-199'},{id:'C3',range:'200-249'},{id:'C4',range:'250-299'},{id:'C5',range:'300-349'},{id:'C6',range:'350-499'},{id:'CS',range:'500-699'},{id:'CS+',range:'700+'}];
+const BUILD_TYPES=['Race Build (Street)','Race Build (Track)','Drift','Gymkhana'];
+
+// ═══ TUNING FIELDS (game menu order #1-59) ═══
+const ECU=[{l:'Rev Limiter',u:'rpm',k:'rev_limiter'},{l:'Turbine Pressure',u:'bar',k:'turbine_pressure'}];
+const INTAKE=[{l:'Peak RPM',u:'rpm',k:'peak_rpm'}];
+const CAMSHAFTS=[{l:'Torque at High',u:'Nm',k:'torque_high'}];
+const CYL_HEAD=[{l:'Torque at Medium',u:'Nm',k:'torque_med'}];
+const ENGINE_BLOCK=[{l:'Torque at Low',u:'Nm',k:'torque_low'}];
+const CLUTCH=[{l:'Gear Shifting Speed',u:'s',k:'gear_shift_speed'}];
+const FRONT_DIFF=[{l:'Differential Locking',u:'',k:'front_diff_lock'},{l:'Lock, Acceleration',u:'Coef.',k:'front_accel_lock'},{l:'Lock, Deceleration',u:'Coef.',k:'front_decel_lock'},{l:'Preload',u:'Nm',k:'front_preload'}];
+const TRANS=[{l:'Final Drive',u:'',k:'final_drive'},{l:'1st Gear',u:'',k:'gear_1'},{l:'2nd Gear',u:'',k:'gear_2'},{l:'3rd Gear',u:'',k:'gear_3'},{l:'4th Gear',u:'',k:'gear_4'},{l:'5th Gear',u:'',k:'gear_5'},{l:'6th Gear',u:'',k:'gear_6'},{l:'7th Gear',u:'',k:'gear_7'},{l:'Reverse Gear',u:'',k:'gear_rev'},{l:'Drivetrain Loss',u:'%',k:'dt_loss'}];
+const REAR_DIFF=[{l:'Differential Locking',u:'',k:'rear_diff_lock'},{l:'Lock, Acceleration',u:'Coef.',k:'rear_accel_lock'},{l:'Lock, Deceleration',u:'Coef.',k:'rear_decel_lock'},{l:'Preload',u:'Nm',k:'rear_preload'}];
+const WEIGHT=[{l:'Weight',u:'kg',k:'weight'},{l:'Weight Distribution Front',u:'%',k:'weight_dist'},{l:'Center of Mass Height',u:'',k:'com_height'}];
+const F_AERO=[{l:'Downforce',u:'kg',k:'front_downforce'},{l:'Air Resistance',u:'',k:'air_resistance'}];
+const R_AERO=[{l:'Downforce',u:'kg',k:'rear_downforce'}];
+const F_SPRINGS=[{l:'Spring Length',u:'mm',k:'f_spring_len'},{l:'Spring Stiffness',u:'kNm',k:'f_spring_stiff'}];
+const F_ARB=[{l:'Stiffness',u:'kNm',k:'f_arb'}];
+const F_ARMS=[{l:'Camber',u:'°',k:'f_camber'},{l:'Caster Angle',u:'°',k:'caster'},{l:'Ackermann Angle',u:'°',k:'ackermann'},{l:'Steering Angle',u:'°',k:'steering_angle'},{l:'Wheel Toe',u:'°',k:'f_toe'}];
+const F_DAMP=[{l:'Slow Bump',u:'',k:'f_slow_bump'},{l:'Fast Bump',u:'',k:'f_fast_bump'},{l:'Slow Rebound',u:'',k:'f_slow_rebound'},{l:'Fast Rebound',u:'',k:'f_fast_rebound'}];
+const BRAKE=[{l:'Braking Force',u:'kNm',k:'brake_force'},{l:'Front Brake Balance',u:'%',k:'brake_bal'}];
+const R_SPRINGS=[{l:'Spring Length',u:'mm',k:'r_spring_len'},{l:'Spring Stiffness',u:'kNm',k:'r_spring_stiff'}];
+const R_ARB=[{l:'Stiffness',u:'kNm',k:'r_arb'}];
+const R_ARMS=[{l:'Camber',u:'°',k:'r_camber'},{l:'Wheel Toe',u:'°',k:'r_toe'}];
+const R_DAMP=[{l:'Slow Bump',u:'',k:'r_slow_bump'},{l:'Fast Bump',u:'',k:'r_fast_bump'},{l:'Slow Rebound',u:'',k:'r_slow_rebound'},{l:'Fast Rebound',u:'',k:'r_fast_rebound'}];
+const F_TIRES=[{l:'Pressure',u:'bar',k:'f_tire_psi'}];
+const R_TIRES=[{l:'Pressure',u:'bar',k:'r_tire_psi'}];
+const F_SPACERS=[{l:'Front Wheel Offset',u:'cm',k:'f_offset'}];
+const R_SPACERS=[{l:'Rear Wheel Offset',u:'cm',k:'r_offset'}];
+
+const FORM_LAYOUTS={
+rwd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS]},{name:'Rear Differential',fields:[...REAR_DIFF]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}],
+awd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS]},{name:'Rear Differential',fields:[...REAR_DIFF]},{name:'Center / Torque',fields:[{l:'Torque Distribution (Front)',u:'%',k:'torque_dist'}]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}],
+fwd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}]
+};
+
+// ═══ EXPORT (Gemini CSV order) ═══
+const EXPORT_BASE=[['Primary Pillars','Caster','caster','degrees'],['Primary Pillars','Ackermann','ackermann','degrees'],['Primary Pillars','Front Offset','f_offset','cm'],['Primary Pillars','Rear Offset','r_offset','cm'],['Alignment','Front Camber','f_camber','degrees'],['Alignment','Rear Camber','r_camber','degrees'],['Alignment','Front Toe','f_toe','degrees'],['Alignment','Rear Toe','r_toe','degrees'],['Alignment','Steering Angle','steering_angle','degrees'],['Suspension','Front Spring Length','f_spring_len','mm'],['Suspension','Rear Spring Length','r_spring_len','mm'],['Suspension','Front Spring Stiffness','f_spring_stiff','kNm'],['Suspension','Rear Spring Stiffness','r_spring_stiff','kNm'],['Suspension','Front Anti-Roll Bar','f_arb','kNm'],['Suspension','Rear Anti-Roll Bar','r_arb','kNm'],['Chassis & Aero','Weight','weight','kg'],['Chassis & Aero','Weight Distribution','weight_dist','%'],['Chassis & Aero','Center of Mass Height','com_height',''],['Chassis & Aero','Front Downforce','front_downforce','kg'],['Chassis & Aero','Rear Downforce','rear_downforce','kg'],['Chassis & Aero','Air Resistance','air_resistance',''],['Engine & Drive','Rev Limiter','rev_limiter','rpm'],['Engine & Drive','Turbine Pressure','turbine_pressure','bar'],['Engine & Drive','Peak RPM','peak_rpm','rpm'],['Engine & Drive','Torque at High','torque_high','Nm'],['Engine & Drive','Torque at Medium','torque_med','Nm'],['Engine & Drive','Torque at Low','torque_low','Nm'],['Engine & Drive','Gear Shifting Speed','gear_shift_speed','s'],['Engine & Drive','Drivetrain Loss','dt_loss','%'],['Transmission','Final Drive','final_drive',''],['Transmission','1st Gear','gear_1',''],['Transmission','2nd Gear','gear_2',''],['Transmission','3rd Gear','gear_3',''],['Transmission','4th Gear','gear_4',''],['Transmission','5th Gear','gear_5',''],['Transmission','6th Gear','gear_6',''],['Transmission','7th Gear','gear_7',''],['Transmission','Reverse Gear','gear_rev','']];
+const FD_EXP=[['Front Differential','Differential Locking','front_diff_lock',''],['Front Differential','Accel Lock','front_accel_lock','Coefficient'],['Front Differential','Decel Lock','front_decel_lock','Coefficient'],['Front Differential','Preload','front_preload','Nm']];
+const RD_EXP=[['Rear Differential','Differential Locking','rear_diff_lock',''],['Rear Differential','Accel Lock','rear_accel_lock','Coefficient'],['Rear Differential','Decel Lock','rear_decel_lock','Coefficient'],['Rear Differential','Preload','rear_preload','Nm']];
+const CT_EXP=[['Center / Torque','Torque Distribution (Front)','torque_dist','%']];
+const EXP_TAIL=[['Wheels & Brakes','Front Tire Pressure','f_tire_psi','bar'],['Wheels & Brakes','Rear Tire Pressure','r_tire_psi','bar'],['Wheels & Brakes','Braking Force','brake_force','kNm'],['Wheels & Brakes','Front Brake Balance','brake_bal','%'],['Dampers','Front Slow Bump','f_slow_bump',''],['Dampers','Rear Slow Bump','r_slow_bump',''],['Dampers','Front Fast Bump','f_fast_bump',''],['Dampers','Rear Fast Bump','r_fast_bump',''],['Dampers','Front Slow Rebound','f_slow_rebound',''],['Dampers','Rear Slow Rebound','r_slow_rebound',''],['Dampers','Front Fast Rebound','f_fast_rebound',''],['Dampers','Rear Fast Rebound','r_fast_rebound','']];
+const EXPORT_TEMPLATES={
+rwd:{prompt:'Adopt this persona and these rules. I am tuning an RWD car. Here are my current specs:',rows:[...EXPORT_BASE,...FD_EXP,...RD_EXP,...EXP_TAIL]},
+awd:{prompt:'Adopt this persona and these rules. I am tuning an AWD car. Here are my current specs:',rows:[...EXPORT_BASE,...CT_EXP,...FD_EXP,...RD_EXP,...EXP_TAIL]},
+fwd:{prompt:'Adopt this persona and these rules. I am tuning a FWD car. Here are my current specs:',rows:[...EXPORT_BASE,...FD_EXP,...EXP_TAIL]}
+};
+
+// ═══ STATE ═══
+let currentDrive='rwd';
+let values={};
+let swapData={car:'',car_custom:'',engine:'Stock',engine_custom:'',trans:'Stock',trans_custom:'',body:'Stock',tires:'Racing+',fuel:'Racing (Sport)',buildType:'',targetClass:'',listed_speed:'',actual_speed:'',actual_speed_na:false,zero_sixty:'',zero_sixty_na:false,listed_note:''};
+let instrText='';
+let instrArchive=[];
+
+function setDrive(type){
+  saveCurrentValues();currentDrive=type;
+  document.querySelectorAll('.drive-tab').forEach((t,i)=>{const types=['rwd','awd','fwd'];t.className='drive-tab';if(types[i]===type)t.classList.add('active-'+type);});
+  document.documentElement.style.setProperty('--accent',{rwd:'#ff6b35',awd:'#ffd600',fwd:'#00d4ff'}[type]);
+  renderForm();
+}
+
+function isDriftOrGymkhana(){return swapData.buildType==='Drift'||swapData.buildType==='Gymkhana';}
+
+function renderForm(){
+  const layout=FORM_LAYOUTS[currentDrive];const el=document.getElementById('content');let h='';
+  // ─── VEHICLE SETUP ───
+  h+=`<div class="category open" id="cat-setup"><div class="category-header" onclick="toggleCat('setup')"><span class="category-title">Vehicle Setup</span><span class="category-chevron">▼</span></div><div class="category-body">`;
+  h+=`<div class="swap-row"><div class="swap-label">Car</div><select class="field-select" onchange="onCarChange(this)"><option value="">-- Select Car --</option>${CARS.map(c=>`<option value="${c}"${swapData.car===c?' selected':''}>${c}</option>`).join('')}</select><input class="custom-input${swapData.car==='Custom'?' show':''}" id="custom-car" placeholder="Type car name..." value="${swapData.car_custom}" oninput="swapData.car_custom=this.value"></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Engine Swap</div><select class="field-select" onchange="onEngineChange(this)">${ENGINES.map(e=>`<option value="${e}"${swapData.engine===e?' selected':''}>${e}</option>`).join('')}</select><input class="custom-input${swapData.engine==='Custom'?' show':''}" id="custom-engine" placeholder="Type engine code..." value="${swapData.engine_custom}" oninput="swapData.engine_custom=this.value"></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Transmission Swap</div><select class="field-select" onchange="onTransChange(this)">${TRANSMISSIONS.map(t=>`<option value="${t}"${swapData.trans===t?' selected':''}>${t}</option>`).join('')}</select><input class="custom-input${swapData.trans==='Custom'?' show':''}" id="custom-trans" placeholder="Type transmission code..." value="${swapData.trans_custom}" oninput="swapData.trans_custom=this.value"></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Body</div><select class="field-select" onchange="swapData.body=this.value">${BODIES.map(b=>`<option value="${b}"${swapData.body===b?' selected':''}>${b}</option>`).join('')}</select></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Tire Compound</div><select class="field-select" onchange="swapData.tires=this.value">${TIRE_COMPOUNDS.map(t=>`<option value="${t}"${swapData.tires===t?' selected':''}>${t}</option>`).join('')}</select></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Fuel Type</div><select class="field-select" onchange="swapData.fuel=this.value">${FUEL_TYPES.map(f=>`<option value="${f}"${swapData.fuel===f?' selected':''}>${f}</option>`).join('')}</select></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Build Type</div><div class="class-grid">${BUILD_TYPES.map(bt=>`<div class="class-chip${swapData.buildType===bt?' selected':''}" onclick="pickBuild('${bt}',this)">${bt}</div>`).join('')}</div></div>`;
+  h+=`<div class="swap-row"><div class="swap-label">Target Class</div><div class="class-grid">${CLASSES.map(c=>`<div class="class-chip${swapData.targetClass===c.id?' selected':''}" onclick="pickClass('${c.id}',this)">${c.id}<span class="class-range">${c.range}</span></div>`).join('')}</div></div>`;
+  // Performance - hide for drift/gymkhana
+  if(!isDriftOrGymkhana()){
+    h+=`<div class="swap-row"><div class="swap-label">Performance</div><div class="perf-grid">`;
+    h+=`<div class="perf-item"><span class="perf-label">Listed MPH</span><input class="perf-input" placeholder="—" value="${swapData.listed_speed}" oninput="swapData.listed_speed=this.value" inputmode="decimal"><select class="field-select" style="margin-top:4px;font-size:11px;padding:4px" onchange="swapData.listed_note=this.value"><option value=""${!swapData.listed_note?' selected':''}>Reached</option><option value="Could not reach"${swapData.listed_note==='Could not reach'?' selected':''}>Could not reach</option><option value="N/A"${swapData.listed_note==='N/A'?' selected':''}>N/A</option></select></div>`;
+    h+=`<div class="perf-item"><span class="perf-label">Actual MPH</span><input class="perf-input${swapData.actual_speed_na?' is-na':''}" placeholder="—" value="${swapData.actual_speed_na?'N/A':swapData.actual_speed}" ${swapData.actual_speed_na?'readonly':''} oninput="swapData.actual_speed=this.value" inputmode="decimal"><div class="perf-na${swapData.actual_speed_na?' active':''}" onclick="togglePerfNA('actual_speed',this)">N/A</div></div>`;
+    h+=`<div class="perf-item"><span class="perf-label">0-60</span><input class="perf-input${swapData.zero_sixty_na?' is-na':''}" placeholder="—" value="${swapData.zero_sixty_na?'N/A':swapData.zero_sixty}" ${swapData.zero_sixty_na?'readonly':''} oninput="swapData.zero_sixty=this.value" inputmode="decimal"><div class="perf-na${swapData.zero_sixty_na?' active':''}" onclick="togglePerfNA('zero_sixty',this)">N/A</div></div>`;
+    h+=`</div></div>`;
+  }
+  h+=`</div></div>`;
+
+  // ─── AI INSTRUCTION BLOCK ───
+  h+=`<div class="category" id="cat-instr"><div class="category-header" onclick="toggleCat('instr')"><span class="category-title">AI Instructions</span><span class="category-chevron">▼</span></div><div class="category-body">`;
+  h+=`<textarea class="instr-area" id="instrArea" placeholder="Paste your Gemini instruction block here...">${instrText}</textarea>`;
+  h+=`<div class="instr-actions"><button class="instr-btn instr-btn-copy" onclick="copyInstr()">Copy Instructions</button><button class="instr-btn instr-btn-archive" onclick="archiveInstr()">Archive</button><button class="instr-btn instr-btn-restore" onclick="toggleArchiveList()">History</button></div>`;
+  h+=`<div class="archive-list" id="archiveList" style="display:none">${instrArchive.map((a,i)=>`<div class="archive-item"><span>v${instrArchive.length-i} — ${a.date}</span><button onclick="restoreInstr(${i})">Restore</button></div>`).join('')}</div>`;
+  h+=`</div></div>`;
+
+  // ─── TOOLBAR ───
+  h+=`<div class="toolbar"><button class="toolbar-btn" onclick="toggleAll(true)">Expand All</button><button class="toolbar-btn" onclick="toggleAll(false)">Collapse</button></div>`;
+
+  // ─── TUNING FIELDS with +/- buttons ───
+  layout.forEach((cat,ci)=>{
+    h+=`<div class="category open" id="cat-${ci}"><div class="category-header" onclick="toggleCat(${ci})"><span class="category-title">${cat.name}</span><span class="category-chevron">▼</span></div><div class="category-body">`;
+    cat.fields.forEach(f=>{
+      const sk=currentDrive+'_'+f.k;const val=values[sk]||'';const isNA=val==='N/A';
+      h+=`<div class="field-row"><span class="field-label">${f.l}</span><button class="na-btn${isNA?' active':''}" onclick="toggleNA('${sk}',this)">N/A</button><button class="pm-btn" onclick="nudge('${sk}',-1)">−</button><input class="field-input${isNA?' is-na':''}" type="text" inputmode="decimal" placeholder="—" data-key="${sk}" value="${val}" ${isNA?'readonly':''} oninput="onInput(this)" tabindex="0"><button class="pm-btn" onclick="nudge('${sk}',1)">+</button><span class="field-unit">${f.u}</span></div>`;
+    });
+    h+=`</div></div>`;
+  });
+  el.innerHTML=h;updateProgress();setupNav();
+}
+
+// ═══ INTERACTION HANDLERS ═══
+function onCarChange(sel){swapData.car=sel.value;const ci=document.getElementById('custom-car');if(sel.value==='Custom'){ci.classList.add('show');ci.focus();}else{ci.classList.remove('show');swapData.car_custom='';}}
+function onEngineChange(sel){swapData.engine=sel.value;const ci=document.getElementById('custom-engine');if(sel.value==='Custom'){ci.classList.add('show');ci.focus();}else{ci.classList.remove('show');swapData.engine_custom='';}}
+function onTransChange(sel){swapData.trans=sel.value;const ci=document.getElementById('custom-trans');if(sel.value==='Custom'){ci.classList.add('show');ci.focus();}else{ci.classList.remove('show');swapData.trans_custom='';}}
+function pickClass(id,el){
+  if(swapData.targetClass===id){swapData.targetClass='';el.classList.remove('selected');return;}
+  el.closest('.class-grid').querySelectorAll('.class-chip').forEach(c=>c.classList.remove('selected'));
+  swapData.targetClass=id;el.classList.add('selected');
+}
+function pickBuild(bt,el){
+  const wasDG=isDriftOrGymkhana();
+  if(swapData.buildType===bt){swapData.buildType='';el.classList.remove('selected');}
+  else{el.closest('.class-grid').querySelectorAll('.class-chip').forEach(c=>c.classList.remove('selected'));swapData.buildType=bt;el.classList.add('selected');}
+  if(isDriftOrGymkhana()!==wasDG)renderForm();
+}
+function togglePerfNA(field,el){
+  if(field==='actual_speed'){swapData.actual_speed_na=!swapData.actual_speed_na;if(swapData.actual_speed_na)swapData.actual_speed='';}
+  else{swapData.zero_sixty_na=!swapData.zero_sixty_na;if(swapData.zero_sixty_na)swapData.zero_sixty='';}
+  renderForm();
+}
+function toggleNA(sk,btn){
+  const input=btn.parentElement.querySelector('.field-input');
+  if(values[sk]==='N/A'){delete values[sk];input.value='';input.readOnly=false;input.classList.remove('is-na');btn.classList.remove('active');}
+  else{values[sk]='N/A';input.value='N/A';input.readOnly=true;input.classList.add('is-na');btn.classList.add('active');}
+  updateProgress();
+}
+function nudge(sk,dir){
+  if(values[sk]==='N/A')return;
+  const inp=document.querySelector(`[data-key="${sk}"]`);
+  let v=parseFloat(inp.value)||0;
+  // Smart step: integers stay integer, decimals step by 0.1
+  const step=inp.value.includes('.')?0.1:1;
+  v=Math.round((v+dir*step)*100)/100;
+  inp.value=v;values[sk]=String(v);updateProgress();
+}
+function onInput(el){values[el.dataset.key]=el.value;updateProgress();}
+function saveCurrentValues(){
+  document.querySelectorAll('.field-input').forEach(inp=>{const k=inp.dataset.key;if(inp.value&&inp.value!=='')values[k]=inp.value;else if(values[k]!=='N/A')delete values[k];});
+  const ta=document.getElementById('instrArea');if(ta)instrText=ta.value;
+}
+function updateProgress(){
+  const layout=FORM_LAYOUTS[currentDrive];let total=0,filled=0;
+  layout.forEach(c=>c.fields.forEach(f=>{total++;if(values[currentDrive+'_'+f.k])filled++;}));
+  const pct=total?Math.round((filled/total)*100):0;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressText').textContent=`${filled} / ${total}`;
+}
+function toggleCat(i){document.getElementById('cat-'+i).classList.toggle('open');}
+function toggleAll(open){document.querySelectorAll('.category').forEach(c=>{if(open)c.classList.add('open');else c.classList.remove('open')});}
+
+// ═══ KEYBOARD NAV — hide action bar, proper tabindex ═══
+function setupNav(){
+  const actionBar=document.querySelector('.action-bar');
+  const isInp=el=>el&&(el.matches('input:not([readonly]),textarea,select'));
+  document.addEventListener('focusin',e=>{if(isInp(e.target))actionBar.classList.add('hidden');});
+  document.addEventListener('focusout',e=>{setTimeout(()=>{if(!isInp(document.activeElement))actionBar.classList.remove('hidden');},150);});
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{if(isInp(document.activeElement))actionBar.classList.add('hidden');else actionBar.classList.remove('hidden');});}
+  // Set sequential tabindex on all field inputs for iOS arrows
+  let idx=1;
+  document.querySelectorAll('.field-input,.perf-input,.custom-input,.instr-area').forEach(inp=>{inp.setAttribute('tabindex',idx++);});
+}
+
+// ═══ INSTRUCTION BLOCK ═══
+function copyInstr(){
+  const ta=document.getElementById('instrArea');instrText=ta.value;
+  navigator.clipboard.writeText(instrText).then(()=>showToast('Instructions copied!')).catch(()=>{fallbackCopy(instrText);showToast('Instructions copied!');});
+}
+function archiveInstr(){
+  const ta=document.getElementById('instrArea');instrText=ta.value;
+  if(!instrText.trim()){showToast('Nothing to archive');return;}
+  instrArchive.unshift({text:instrText,date:new Date().toLocaleDateString()});
+  showToast('Archived v'+instrArchive.length);
+  renderForm();
+}
+function toggleArchiveList(){const al=document.getElementById('archiveList');al.style.display=al.style.display==='none'?'block':'none';}
+function restoreInstr(i){instrText=instrArchive[i].text;renderForm();showToast('Restored');}
+
+// ═══ EXPORT ═══
+function getCarName(){return swapData.car==='Custom'?(swapData.car_custom||'Custom'):swapData.car;}
+function getEngineName(){return swapData.engine==='Custom'?(swapData.engine_custom||'Custom'):swapData.engine;}
+function getTransName(){return swapData.trans==='Custom'?(swapData.trans_custom||'Custom'):swapData.trans;}
+
+function buildCSV(){
+  saveCurrentValues();const t=EXPORT_TEMPLATES[currentDrive];
+  let csv=t.prompt+',,,\n,,,\n';
+  csv+=`Vehicle Setup,,,\nSetup,Car,${getCarName()},\nSetup,Engine Swap,${getEngineName()},\nSetup,Transmission Swap,${getTransName()},\nSetup,Body,${swapData.body},\nSetup,Tire Compound,${swapData.tires},\nSetup,Fuel Type,${swapData.fuel},\nSetup,Build Type,${swapData.buildType},\nSetup,Target Class,${swapData.targetClass},\n`;
+  if(!isDriftOrGymkhana()){
+    const lNote=swapData.listed_note?` (${swapData.listed_note})`:'';
+    csv+=`Setup,Listed Top Speed,${swapData.listed_speed}${lNote},mph\nSetup,Actual Top Speed,${swapData.actual_speed_na?'N/A':swapData.actual_speed},mph\nSetup,0-60 Time,${swapData.zero_sixty_na?'N/A':swapData.zero_sixty},s\n`;
+  }
+  csv+=`,,,\nCategory,Component,Current Value,Unit\n`;
+  t.rows.forEach(([cat,comp,key,unit])=>{csv+=`${cat},${comp},${values[currentDrive+'_'+key]||''},${unit}\n`;});
+  return csv;
+}
+
+function buildFullExport(){
+  let out='';
+  if(instrText.trim())out+=instrText.trim()+'\n\n';
+  out+=buildCSV();
+  return out;
+}
+
+function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
+
+function copyToClipboard(){
+  const full=buildFullExport();
+  navigator.clipboard.writeText(full).then(()=>showToast('Copied!')).catch(()=>{fallbackCopy(full);showToast('Copied!');});
+}
+
+function exportCSV(){
+  const full=buildFullExport();
+  const label=currentDrive.toUpperCase();
+  const fn=`tune_${label}_${new Date().toISOString().slice(0,10)}.csv`;
+  // Use share API on mobile
+  if(navigator.share){
+    const file=new File([full],fn,{type:'text/plain'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      navigator.share({title:`TuneSpec ${label}`,files:[file]}).then(()=>showToast('Shared!')).catch(()=>showToast('Share cancelled'));
+      return;
+    }
+    // Fallback: share as text
+    navigator.share({title:`TuneSpec ${label}`,text:full}).then(()=>showToast('Shared!')).catch(()=>showToast('Share cancelled'));
+    return;
+  }
+  // Desktop fallback
+  const blob=new Blob([full],{type:'text/csv'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fn;a.click();URL.revokeObjectURL(url);showToast('Exported!');
+}
+
+function clearAll(){
+  if(!confirm('Clear ALL data for '+currentDrive.toUpperCase()+'?'))return;
+  FORM_LAYOUTS[currentDrive].forEach(c=>c.fields.forEach(f=>delete values[currentDrive+'_'+f.k]));
+  swapData={car:'',car_custom:'',engine:'Stock',engine_custom:'',trans:'Stock',trans_custom:'',body:'Stock',tires:'Racing+',fuel:'Racing (Sport)',buildType:'',targetClass:'',listed_speed:'',actual_speed:'',actual_speed_na:false,zero_sixty:'',zero_sixty_na:false,listed_note:''};
+  renderForm();showToast('Cleared');
+}
+
+setDrive('rwd');
+</script>
+</body>
+</html>
