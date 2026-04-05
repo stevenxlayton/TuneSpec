@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0a0a0a">
 <title>TuneSpec</title>
 <style>
-:root{--bg:#0a0a0a;--surface:#151515;--surface2:#1e1e1e;--border:#2a2a2a;--text:#e8e8e8;--text2:#888;--accent:#ff6b35;--green:#4caf50;--input-bg:#111;--rwd:#ff6b35;--awd:#ffd600;--fwd:#00d4ff;--na:#ef4444}
+:root{--bg:#0a0a0a;--surface:#151515;--surface2:#1e1e1e;--border:#2a2a2a;--text:#e8e8e8;--text2:#888;--accent:#ff6b35;--green:#4caf50;--input-bg:#111;--rwd:#ff6b35;--awd:#ffd600;--fwd:#00d4ff;--na:#ef4444;--locked:#f59e0b}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;overflow-x:hidden}
 .header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top))}
@@ -40,10 +40,14 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe U
 .field-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.15)}
 .field-input::placeholder{color:#444;font-weight:400}
 .field-input.is-na{background:#1a0a0a;border-color:var(--na);color:var(--na);font-size:13px;font-family:-apple-system,sans-serif;width:68px}
+.field-input.is-locked{background:#1a1400;border-color:var(--locked);color:var(--locked);font-size:11px;font-family:-apple-system,sans-serif;width:68px}
 .na-btn{width:32px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:9px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
 .na-btn:active{transform:scale(.93)}
 .na-btn.active{background:var(--na);color:#fff;border-color:var(--na)}
-.pm-btn{width:28px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:18px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0}
+.lock-btn{width:32px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.lock-btn:active{transform:scale(.93)}
+.lock-btn.active{background:var(--locked);color:#000;border-color:var(--locked)}
+.pm-btn{width:28px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0;font-family:'SF Mono','Menlo',monospace}
 .pm-btn:active{transform:scale(.9);background:var(--accent);color:#000}
 .field-select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:14px;font-weight:600;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
 .field-select:focus{outline:none;border-color:var(--accent)}
@@ -67,6 +71,24 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe U
 .perf-input.is-na{background:#1a0a0a;border-color:var(--na);color:var(--na);font-size:12px;font-family:-apple-system,sans-serif}
 .perf-na{font-size:9px;color:var(--text2);text-align:center;cursor:pointer;margin-top:2px;text-decoration:underline}
 .perf-na.active{color:var(--na)}
+/* Tire dimension inputs */
+.tire-row{display:flex;align-items:center;gap:6px;padding:7px 4px;border-bottom:1px solid var(--border)}
+.tire-row:last-child{border-bottom:none}
+.tire-label{font-size:13px;font-weight:600;color:var(--text2);min-width:50px}
+.tire-input{width:52px;padding:8px 2px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:15px;text-align:center;font-weight:600;font-family:'SF Mono','Menlo',monospace;-webkit-appearance:none;appearance:none}
+.tire-input:focus{outline:none;border-color:var(--accent)}
+.tire-input::placeholder{color:#444;font-weight:400;font-size:11px}
+.tire-sep{color:var(--text2);font-size:16px;font-weight:700}
+/* Final drive min/max row */
+.fd-row{display:flex;align-items:center;padding:7px 4px;border-bottom:1px solid var(--border);gap:4px;flex-wrap:wrap}
+.fd-label{flex:1;font-size:14px;color:var(--text);line-height:1.2;min-width:80px}
+.fd-group{display:flex;align-items:center;gap:3px}
+.fd-mini-label{font-size:9px;color:var(--text2);font-weight:700;text-transform:uppercase;width:26px;text-align:center}
+.fd-input{width:56px;padding:8px 2px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:15px;text-align:center;font-weight:600;font-family:'SF Mono','Menlo',monospace;-webkit-appearance:none;appearance:none}
+.fd-input:focus{outline:none;border-color:var(--accent)}
+.fd-input::placeholder{color:#444;font-weight:400;font-size:10px}
+.fd-input.is-na{background:#1a0a0a;border-color:var(--na);color:var(--na);font-size:11px;font-family:-apple-system,sans-serif}
+.fd-input.is-locked{background:#1a1400;border-color:var(--locked);color:var(--locked);font-size:10px;font-family:-apple-system,sans-serif}
 /* Instruction block */
 .instr-area{width:100%;min-height:100px;padding:10px;border:1px solid var(--border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:13px;font-family:'SF Mono','Menlo',monospace;resize:vertical;-webkit-appearance:none}
 .instr-area:focus{outline:none;border-color:var(--accent)}
@@ -90,6 +112,16 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe U
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .toolbar{display:flex;justify-content:flex-end;padding:8px 4px 4px;gap:12px}
 .toolbar-btn{background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:4px 0}
+/* Clear confirmation overlay */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.confirm-overlay.show{opacity:1;pointer-events:auto}
+.confirm-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:300px;width:90%;text-align:center}
+.confirm-box h3{font-size:17px;margin-bottom:8px;color:var(--text)}
+.confirm-box p{font-size:13px;color:var(--text2);margin-bottom:20px}
+.confirm-btns{display:flex;gap:10px}
+.confirm-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.confirm-cancel{background:var(--surface2);color:var(--text2)}
+.confirm-yes{background:var(--na);color:#fff}
 </style>
 </head>
 <body>
@@ -107,54 +139,132 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe U
 </div>
 <div class="content" id="content"></div>
 <div class="action-bar">
-  <button class="btn btn-clear" onclick="clearAll()">Clear</button>
+  <button class="btn btn-clear" onclick="showClearConfirm()">Clear</button>
   <button class="btn btn-copy" onclick="copyToClipboard()">Copy</button>
   <button class="btn btn-export" onclick="exportCSV()">Export</button>
 </div>
 <div class="toast" id="toast"></div>
+<!-- FIX #3: Clear confirmation overlay -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Clear All Data?</h3>
+    <p id="confirmMsg">This will erase all tuning values for RWD. This cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="hideClearConfirm()">Cancel</button>
+      <button class="confirm-yes" onclick="confirmClear()">Yes, Clear</button>
+    </div>
+  </div>
+</div>
 <script>
-// ═══ CAR LIST: In-game code (real name) ═══
+// ═══ CAR LIST: In-game code (real name) — FIX #6: sorted alphabetically by in-game code ═══
 const CARS=[
-// Nissan / Datsun
-'S13 (Nissan Silvia S13)','S14 (Nissan Silvia S14)','S15 (Nissan Silvia S15)','S18 (Nissan 180SX)','32R (Nissan Skyline GT-R R32)','33R (Nissan Skyline GT-R R33)','34R (Nissan Skyline GT-R R34)','Z31 (Nissan 300ZX Z31)','30Z (Nissan 300ZX Z32)','Z37 (Nissan 370Z)','Z40 (Nissan Z 2023)','FLD (Datsun 240Z/280Z)','DTS (Datsun 620 Truck)','STG (Nissan Stagea)',
-// Toyota
-'E86 (Toyota AE86 Trueno)','R86 (Toyota GR86/GT86)','S80 (Toyota Supra Mk4 A80)','S90C (Toyota Supra Mk5 A90)','TM2 (Toyota Mark II)','CRT (Toyota Cresta)','GRC (Toyota GR Corolla Morizo)','YRS (Toyota GR Yaris)',
-// Honda
-'HC6 (Honda Civic EG6)','HC9 (Honda Civic Type R EK9)','HCR (Honda Civic Type R FK8)','H15 (Honda Integra Type R DC5)','HS2 (Honda S2000)','HSX (Acura NSX NA1)',
-// Mazda
-'NX5 (Mazda MX-5 NA)','NX5C (Mazda MX-5 NA Coupe)','FX7 (Mazda RX-7 FC)','DX7 (Mazda RX-7 FD)','DX8 (Mazda RX-8)',
-// Mitsubishi
-'ECL (Mitsubishi Eclipse 2G)','EV6 (Mitsubishi Lancer Evo VI)','EV9 (Mitsubishi Lancer Evo IX)','EVX (Mitsubishi Lancer Evo X)',
-// Subaru
-'SFR (Subaru BRZ)',
-// Suzuki
-'SZK (Suzuki Carry K-Truck)',
-// BMW
-'M30 (BMW M3 E30)','E36 (BMW M3 E36)','M46 (BMW M3 E46)','M92 (BMW M3 GTS E92)','M92C (BMW M3 Convertible E92)','MG3 (BMW M3 Touring G81)','M4R (BMW M4 F82)','M4G (BMW M4 G82)','M34 (BMW M3/M4 G80/G82)','BM2 (BMW M2 F87)','BM2R (BMW M2 G87 2023)','M39 (BMW M5 Touring E39)','M60 (BMW M5 E60)','M90 (BMW M5 CS F90)','B31 (BMW 850CSi)','B81 (BMW i8)','BX5 (BMW X5 M)','BZ4 (BMW Z4)',
-// Audi
-'AR8 (Audi R8)','6RS (Audi RS6 Avant)','7RS (Audi RS7)','TTR (Audi TT RS)',
-// Mercedes
-'63C (Mercedes-AMG C63 S)','MGT (Mercedes-AMG GT R)','MGTC (Mercedes-AMG GT S Roadster)','GLW (Mercedes-AMG G65)','B19 (Mercedes 190E)',
-// Aston Martin
+'63C (Mercedes-AMG C63 S)',
+'6RS (Audi RS6 Avant)',
+'7RS (Audi RS7)',
 'AMV (Aston Martin Vantage)',
-// Porsche
-'PGT (Porsche 911 GT3)',
-// Volkswagen
-'V7G (VW Golf GTI Mk7)',
-// Lamborghini
-'LMA (Lamborghini Huracan)','LMD (Lamborghini Diablo VT)','LMH (Lamborghini Huracan RWD)','LMM (Lamborghini Murcielago)',
-// Lexus / Lotus
-'LFL (Lexus LFA)','LTS (Lotus Exige)',
-// McLaren
+'AR8 (Audi R8)',
+'B19 (Mercedes 190E)',
+'B31 (BMW 850CSi)',
+'B81 (BMW i8)',
+'BM2 (BMW M2 F87)',
+'BM2R (BMW M2 G87 2023)',
+'BX5 (BMW X5 M)',
+'BZ4 (BMW Z4)',
+'C70 (Chevrolet Camaro 1970)',
+'CC3 (Chevrolet Corvette C3)',
+'CC6 (Chevrolet Corvette Z06 C6)',
+'CC7 (Chevrolet Corvette Z06 C7)',
+'CHR (Dodge Charger 1970)',
+'CMR (Chevrolet Camaro SS 2016)',
+'CRT (Toyota Cresta)',
+'CVL (Chevrolet Chevelle SS 1970)',
+'DC2 (Dodge Charger SRT Hellcat)',
+'DTS (Datsun 620 Truck)',
+'DX7 (Mazda RX-7 FD)',
+'DX8 (Mazda RX-8)',
+'E36 (BMW M3 E36)',
+'E86 (Toyota AE86 Trueno)',
+'ECL (Mitsubishi Eclipse 2G)',
+'EV6 (Mitsubishi Lancer Evo VI)',
+'EV9 (Mitsubishi Lancer Evo IX)',
+'EVX (Mitsubishi Lancer Evo X)',
+'F35 (Ford Shelby GT350R)',
+'F69 (Ford Mustang Mach 1 1969)',
+'FGT (Ford GT)',
+'FLD (Datsun 240Z/280Z)',
+'FST (Ford Focus ST)',
+'FX7 (Mazda RX-7 FC)',
+'GLW (Mercedes-AMG G65)',
+'GRC (Toyota GR Corolla Morizo)',
+'H15 (Honda Integra Type R DC5)',
+'HC6 (Honda Civic EG6)',
+'HC9 (Honda Civic Type R EK9)',
+'HCR (Honda Civic Type R FK8)',
+'HNG (Hoonicorn Mustang)',
+'HRD (Hot Rod Truck)',
+'HS2 (Honda S2000)',
+'HSS (HSV Maloo R8)',
+'HSX (Acura NSX NA1)',
+'IF6 (Infiniti Q60)',
+'JGR (Jaguar F-Type R)',
+'L08 (Lada Samara)',
+'LFL (Lexus LFA)',
+'LMA (Lamborghini Huracan)',
+'LMD (Lamborghini Diablo VT)',
+'LMH (Lamborghini Huracan RWD)',
+'LMM (Lamborghini Murcielago)',
+'LTS (Lotus Exige)',
+'M30 (BMW M3 E30)',
+'M34 (BMW M3/M4 G80/G82)',
+'M39 (BMW M5 Touring E39)',
+'M46 (BMW M3 E46)',
+'M4G (BMW M4 G82)',
+'M4R (BMW M4 F82)',
+'M60 (BMW M5 E60)',
+'M90 (BMW M5 CS F90)',
+'M92 (BMW M3 GTS E92)',
+'M92C (BMW M3 Convertible E92)',
+'MCS (MINI JCW)',
+'MG3 (BMW M3 Touring G81)',
+'MGT (Mercedes-AMG GT R)',
+'MGTC (Mercedes-AMG GT S Roadster)',
 'MLN (McLaren 720S)',
-// Jaguar / Infiniti
-'JGR (Jaguar F-Type R)','IF6 (Infiniti Q60)',
-// American
-'C70 (Chevrolet Camaro 1970)','CMR (Chevrolet Camaro SS 2016)','CVL (Chevrolet Chevelle SS 1970)','CC3 (Chevrolet Corvette C3)','CC6 (Chevrolet Corvette Z06 C6)','CC7 (Chevrolet Corvette Z06 C7)','CHR (Dodge Charger 1970)','DC2 (Dodge Charger SRT Hellcat)','STR (Dodge Challenger SRT)','VP1 (Dodge Viper SRT10)','VPR (Dodge Viper ACR)','VAN (Dodge Ram Van)','F69 (Ford Mustang Mach 1 1969)','F35 (Ford Shelby GT350R)','S65 (Ford Mustang Dark Horse)','FST (Ford Focus ST)','FGT (Ford GT)','HNG (Hoonicorn Mustang)','HRD (Hot Rod Truck)',
-// Other
-'HSS (HSV Maloo R8)','L08 (Lada Samara)','MCS (MINI JCW)',
+'NX5 (Mazda MX-5 NA)',
+'NX5C (Mazda MX-5 NA Coupe)',
+'PGT (Porsche 911 GT3)',
+'R86 (Toyota GR86/GT86)',
+'S13 (Nissan Silvia S13)',
+'S14 (Nissan Silvia S14)',
+'S15 (Nissan Silvia S15)',
+'S18 (Nissan 180SX)',
+'S65 (Ford Mustang Dark Horse)',
+'S80 (Toyota Supra Mk4 A80)',
+'S90C (Toyota Supra Mk5 A90)',
+'SFR (Subaru BRZ)',
+'STG (Nissan Stagea)',
+'STR (Dodge Challenger SRT)',
+'SZK (Suzuki Carry K-Truck)',
+'TM2 (Toyota Mark II)',
+'TTR (Audi TT RS)',
+'V7G (VW Golf GTI Mk7)',
+'VAN (Dodge Ram Van)',
+'VP1 (Dodge Viper SRT10)',
+'VPR (Dodge Viper ACR)',
+'YRS (Toyota GR Yaris)',
+'Z31 (Nissan 300ZX Z31)',
+'Z37 (Nissan 370Z)',
+'Z40 (Nissan Z 2023)',
+'30Z (Nissan 300ZX Z32)',
+'32R (Nissan Skyline GT-R R32)',
+'33R (Nissan Skyline GT-R R33)',
+'34R (Nissan Skyline GT-R R34)',
 'Custom'
-];
+].sort((a,b)=>{
+  if(a==='Custom')return 1;if(b==='Custom')return -1;
+  const an=a.split(' ')[0],bn=b.split(' ')[0];
+  return an.localeCompare(bn,undefined,{numeric:true,sensitivity:'base'});
+});
+
 const ENGINES=['Stock','RS20','BR26','HQ37','JZ2-GT','LSS','HI5','M90','RV38','B28','FV8','V12','Custom'];
 const TRANSMISSIONS=['Stock','T50 5spd','T60 6spd','T50S 6spd (Sport)','T70 7spd (Sport)','Custom'];
 const BODIES=['Stock','Stage 1','Stage 2','Stage 3','Stage 4'];
@@ -163,7 +273,7 @@ const FUEL_TYPES=['Regular','Racing (Sport)'];
 const CLASSES=[{id:'C1',range:'0-149'},{id:'C2',range:'150-199'},{id:'C3',range:'200-249'},{id:'C4',range:'250-299'},{id:'C5',range:'300-349'},{id:'C6',range:'350-499'},{id:'CS',range:'500-699'},{id:'CS+',range:'700+'}];
 const BUILD_TYPES=['Race Build (Street)','Race Build (Track)','Drift','Gymkhana'];
 
-// ═══ TUNING FIELDS (game menu order #1-59) ═══
+// ═══ TUNING FIELDS (game menu order) ═══
 const ECU=[{l:'Rev Limiter',u:'rpm',k:'rev_limiter'},{l:'Turbine Pressure',u:'bar',k:'turbine_pressure'}];
 const INTAKE=[{l:'Peak RPM',u:'rpm',k:'peak_rpm'}];
 const CAMSHAFTS=[{l:'Torque at High',u:'Nm',k:'torque_high'}];
@@ -171,33 +281,38 @@ const CYL_HEAD=[{l:'Torque at Medium',u:'Nm',k:'torque_med'}];
 const ENGINE_BLOCK=[{l:'Torque at Low',u:'Nm',k:'torque_low'}];
 const CLUTCH=[{l:'Gear Shifting Speed',u:'s',k:'gear_shift_speed'}];
 const FRONT_DIFF=[{l:'Differential Locking',u:'',k:'front_diff_lock'},{l:'Lock, Acceleration',u:'Coef.',k:'front_accel_lock'},{l:'Lock, Deceleration',u:'Coef.',k:'front_decel_lock'},{l:'Preload',u:'Nm',k:'front_preload'}];
-const TRANS=[{l:'Final Drive',u:'',k:'final_drive'},{l:'1st Gear',u:'',k:'gear_1'},{l:'2nd Gear',u:'',k:'gear_2'},{l:'3rd Gear',u:'',k:'gear_3'},{l:'4th Gear',u:'',k:'gear_4'},{l:'5th Gear',u:'',k:'gear_5'},{l:'6th Gear',u:'',k:'gear_6'},{l:'7th Gear',u:'',k:'gear_7'},{l:'Reverse Gear',u:'',k:'gear_rev'},{l:'Drivetrain Loss',u:'%',k:'dt_loss'}];
+// FIX #8: Final Drive has min/max/current — handled specially in render, but still part of TRANS for field counting
+const TRANS_GEARS=[{l:'1st Gear',u:'',k:'gear_1'},{l:'2nd Gear',u:'',k:'gear_2'},{l:'3rd Gear',u:'',k:'gear_3'},{l:'4th Gear',u:'',k:'gear_4'},{l:'5th Gear',u:'',k:'gear_5'},{l:'6th Gear',u:'',k:'gear_6'},{l:'7th Gear',u:'',k:'gear_7'},{l:'Reverse Gear',u:'',k:'gear_rev'},{l:'Drivetrain Loss',u:'%',k:'dt_loss'}];
+const FINAL_DRIVE_FIELDS=[{l:'Final Drive Min',k:'final_drive_min'},{l:'Final Drive',k:'final_drive'},{l:'Final Drive Max',k:'final_drive_max'}];
 const REAR_DIFF=[{l:'Differential Locking',u:'',k:'rear_diff_lock'},{l:'Lock, Acceleration',u:'Coef.',k:'rear_accel_lock'},{l:'Lock, Deceleration',u:'Coef.',k:'rear_decel_lock'},{l:'Preload',u:'Nm',k:'rear_preload'}];
 const WEIGHT=[{l:'Weight',u:'kg',k:'weight'},{l:'Weight Distribution Front',u:'%',k:'weight_dist'},{l:'Center of Mass Height',u:'',k:'com_height'}];
 const F_AERO=[{l:'Downforce',u:'kg',k:'front_downforce'},{l:'Air Resistance',u:'',k:'air_resistance'}];
 const R_AERO=[{l:'Downforce',u:'kg',k:'rear_downforce'}];
 const F_SPRINGS=[{l:'Spring Length',u:'mm',k:'f_spring_len'},{l:'Spring Stiffness',u:'kNm',k:'f_spring_stiff'}];
 const F_ARB=[{l:'Stiffness',u:'kNm',k:'f_arb'}];
-const F_ARMS=[{l:'Camber',u:'°',k:'f_camber'},{l:'Caster Angle',u:'°',k:'caster'},{l:'Ackermann Angle',u:'°',k:'ackermann'},{l:'Steering Angle',u:'°',k:'steering_angle'},{l:'Wheel Toe',u:'°',k:'f_toe'}];
+const F_ARMS=[{l:'Camber',u:'°',k:'f_camber',sign:true},{l:'Caster Angle',u:'°',k:'caster'},{l:'Ackermann Angle',u:'°',k:'ackermann'},{l:'Steering Angle',u:'°',k:'steering_angle'},{l:'Wheel Toe',u:'°',k:'f_toe',sign:true}];
 const F_DAMP=[{l:'Slow Bump',u:'',k:'f_slow_bump'},{l:'Fast Bump',u:'',k:'f_fast_bump'},{l:'Slow Rebound',u:'',k:'f_slow_rebound'},{l:'Fast Rebound',u:'',k:'f_fast_rebound'}];
 const BRAKE=[{l:'Braking Force',u:'kNm',k:'brake_force'},{l:'Front Brake Balance',u:'%',k:'brake_bal'}];
 const R_SPRINGS=[{l:'Spring Length',u:'mm',k:'r_spring_len'},{l:'Spring Stiffness',u:'kNm',k:'r_spring_stiff'}];
 const R_ARB=[{l:'Stiffness',u:'kNm',k:'r_arb'}];
-const R_ARMS=[{l:'Camber',u:'°',k:'r_camber'},{l:'Wheel Toe',u:'°',k:'r_toe'}];
+const R_ARMS=[{l:'Camber',u:'°',k:'r_camber',sign:true},{l:'Wheel Toe',u:'°',k:'r_toe',sign:true}];
 const R_DAMP=[{l:'Slow Bump',u:'',k:'r_slow_bump'},{l:'Fast Bump',u:'',k:'r_fast_bump'},{l:'Slow Rebound',u:'',k:'r_slow_rebound'},{l:'Fast Rebound',u:'',k:'r_fast_rebound'}];
 const F_TIRES=[{l:'Pressure',u:'bar',k:'f_tire_psi'}];
 const R_TIRES=[{l:'Pressure',u:'bar',k:'r_tire_psi'}];
 const F_SPACERS=[{l:'Front Wheel Offset',u:'cm',k:'f_offset'}];
 const R_SPACERS=[{l:'Rear Wheel Offset',u:'cm',k:'r_offset'}];
 
+// Build transmission category fields (for progress counting)
+const TRANS_ALL=[...FINAL_DRIVE_FIELDS.map(f=>({l:f.l,u:'',k:f.k})),...TRANS_GEARS];
+
 const FORM_LAYOUTS={
-rwd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS]},{name:'Rear Differential',fields:[...REAR_DIFF]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}],
-awd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS]},{name:'Rear Differential',fields:[...REAR_DIFF]},{name:'Center / Torque',fields:[{l:'Torque Distribution (Front)',u:'%',k:'torque_dist'}]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}],
-fwd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}]
+rwd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS_ALL],special:'trans'},{name:'Rear Differential',fields:[...REAR_DIFF]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}],
+awd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS_ALL],special:'trans'},{name:'Rear Differential',fields:[...REAR_DIFF]},{name:'Center / Torque',fields:[{l:'Torque Distribution (Front)',u:'%',k:'torque_dist'}]},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}],
+fwd:[{name:'ECU',fields:[...ECU]},{name:'Intake Manifold',fields:[...INTAKE]},{name:'Camshafts',fields:[...CAMSHAFTS]},{name:'Cylinder Head',fields:[...CYL_HEAD]},{name:'Engine Block',fields:[...ENGINE_BLOCK]},{name:'Clutch',fields:[...CLUTCH]},{name:'Front Differential',fields:[...FRONT_DIFF]},{name:'Transmission',fields:[...TRANS_ALL],special:'trans'},{name:'Car Weight',fields:[...WEIGHT]},{name:'Front Aerodynamics',fields:[...F_AERO]},{name:'Rear Aerodynamics',fields:[...R_AERO]},{name:'Front Springs',fields:[...F_SPRINGS]},{name:'Front Anti-Roll Bars',fields:[...F_ARB]},{name:'Front Suspension Arms',fields:[...F_ARMS]},{name:'Front Dampers',fields:[...F_DAMP]},{name:'Braking System',fields:[...BRAKE]},{name:'Rear Springs',fields:[...R_SPRINGS]},{name:'Rear Anti-Roll Bars',fields:[...R_ARB]},{name:'Rear Suspension Arms',fields:[...R_ARMS]},{name:'Rear Dampers',fields:[...R_DAMP]},{name:'Front Tires',fields:[...F_TIRES]},{name:'Rear Tires',fields:[...R_TIRES]},{name:'Front Spacers',fields:[...F_SPACERS]},{name:'Rear Spacers',fields:[...R_SPACERS]}]
 };
 
 // ═══ EXPORT (Gemini CSV order) ═══
-const EXPORT_BASE=[['Primary Pillars','Caster','caster','degrees'],['Primary Pillars','Ackermann','ackermann','degrees'],['Primary Pillars','Front Offset','f_offset','cm'],['Primary Pillars','Rear Offset','r_offset','cm'],['Alignment','Front Camber','f_camber','degrees'],['Alignment','Rear Camber','r_camber','degrees'],['Alignment','Front Toe','f_toe','degrees'],['Alignment','Rear Toe','r_toe','degrees'],['Alignment','Steering Angle','steering_angle','degrees'],['Suspension','Front Spring Length','f_spring_len','mm'],['Suspension','Rear Spring Length','r_spring_len','mm'],['Suspension','Front Spring Stiffness','f_spring_stiff','kNm'],['Suspension','Rear Spring Stiffness','r_spring_stiff','kNm'],['Suspension','Front Anti-Roll Bar','f_arb','kNm'],['Suspension','Rear Anti-Roll Bar','r_arb','kNm'],['Chassis & Aero','Weight','weight','kg'],['Chassis & Aero','Weight Distribution','weight_dist','%'],['Chassis & Aero','Center of Mass Height','com_height',''],['Chassis & Aero','Front Downforce','front_downforce','kg'],['Chassis & Aero','Rear Downforce','rear_downforce','kg'],['Chassis & Aero','Air Resistance','air_resistance',''],['Engine & Drive','Rev Limiter','rev_limiter','rpm'],['Engine & Drive','Turbine Pressure','turbine_pressure','bar'],['Engine & Drive','Peak RPM','peak_rpm','rpm'],['Engine & Drive','Torque at High','torque_high','Nm'],['Engine & Drive','Torque at Medium','torque_med','Nm'],['Engine & Drive','Torque at Low','torque_low','Nm'],['Engine & Drive','Gear Shifting Speed','gear_shift_speed','s'],['Engine & Drive','Drivetrain Loss','dt_loss','%'],['Transmission','Final Drive','final_drive',''],['Transmission','1st Gear','gear_1',''],['Transmission','2nd Gear','gear_2',''],['Transmission','3rd Gear','gear_3',''],['Transmission','4th Gear','gear_4',''],['Transmission','5th Gear','gear_5',''],['Transmission','6th Gear','gear_6',''],['Transmission','7th Gear','gear_7',''],['Transmission','Reverse Gear','gear_rev','']];
+const EXPORT_BASE=[['Primary Pillars','Caster','caster','degrees'],['Primary Pillars','Ackermann','ackermann','degrees'],['Primary Pillars','Front Offset','f_offset','cm'],['Primary Pillars','Rear Offset','r_offset','cm'],['Alignment','Front Camber','f_camber','degrees'],['Alignment','Rear Camber','r_camber','degrees'],['Alignment','Front Toe','f_toe','degrees'],['Alignment','Rear Toe','r_toe','degrees'],['Alignment','Steering Angle','steering_angle','degrees'],['Suspension','Front Spring Length','f_spring_len','mm'],['Suspension','Rear Spring Length','r_spring_len','mm'],['Suspension','Front Spring Stiffness','f_spring_stiff','kNm'],['Suspension','Rear Spring Stiffness','r_spring_stiff','kNm'],['Suspension','Front Anti-Roll Bar','f_arb','kNm'],['Suspension','Rear Anti-Roll Bar','r_arb','kNm'],['Chassis & Aero','Weight','weight','kg'],['Chassis & Aero','Weight Distribution','weight_dist','%'],['Chassis & Aero','Center of Mass Height','com_height',''],['Chassis & Aero','Front Downforce','front_downforce','kg'],['Chassis & Aero','Rear Downforce','rear_downforce','kg'],['Chassis & Aero','Air Resistance','air_resistance',''],['Engine & Drive','Rev Limiter','rev_limiter','rpm'],['Engine & Drive','Turbine Pressure','turbine_pressure','bar'],['Engine & Drive','Peak RPM','peak_rpm','rpm'],['Engine & Drive','Torque at High','torque_high','Nm'],['Engine & Drive','Torque at Medium','torque_med','Nm'],['Engine & Drive','Torque at Low','torque_low','Nm'],['Engine & Drive','Gear Shifting Speed','gear_shift_speed','s'],['Engine & Drive','Drivetrain Loss','dt_loss','%'],['Transmission','Final Drive Min','final_drive_min',''],['Transmission','Final Drive','final_drive',''],['Transmission','Final Drive Max','final_drive_max',''],['Transmission','1st Gear','gear_1',''],['Transmission','2nd Gear','gear_2',''],['Transmission','3rd Gear','gear_3',''],['Transmission','4th Gear','gear_4',''],['Transmission','5th Gear','gear_5',''],['Transmission','6th Gear','gear_6',''],['Transmission','7th Gear','gear_7',''],['Transmission','Reverse Gear','gear_rev','']];
 const FD_EXP=[['Front Differential','Differential Locking','front_diff_lock',''],['Front Differential','Accel Lock','front_accel_lock','Coefficient'],['Front Differential','Decel Lock','front_decel_lock','Coefficient'],['Front Differential','Preload','front_preload','Nm']];
 const RD_EXP=[['Rear Differential','Differential Locking','rear_diff_lock',''],['Rear Differential','Accel Lock','rear_accel_lock','Coefficient'],['Rear Differential','Decel Lock','rear_decel_lock','Coefficient'],['Rear Differential','Preload','rear_preload','Nm']];
 const CT_EXP=[['Center / Torque','Torque Distribution (Front)','torque_dist','%']];
@@ -211,7 +326,11 @@ fwd:{prompt:'Adopt this persona and these rules. I am tuning a FWD car. Here are
 // ═══ STATE ═══
 let currentDrive='rwd';
 let values={};
-let swapData={car:'',car_custom:'',engine:'Stock',engine_custom:'',trans:'Stock',trans_custom:'',body:'Stock',tires:'Racing+',fuel:'Racing (Sport)',buildType:'',targetClass:'',listed_speed:'',actual_speed:'',actual_speed_na:false,zero_sixty:'',zero_sixty_na:false,listed_note:''};
+let swapData={car:'',car_custom:'',engine:'Stock',engine_custom:'',trans:'Stock',trans_custom:'',body:'Stock',tires:'Racing+',fuel:'Racing (Sport)',buildType:'',targetClass:'',listed_speed:'',actual_speed:'',actual_speed_na:false,zero_sixty:'',zero_sixty_na:false,listed_note:'',
+  // FIX #4: tire dimensions front/rear
+  f_tire_w:'',f_tire_ar:'',f_tire_rim:'',
+  r_tire_w:'',r_tire_ar:'',r_tire_rim:''
+};
 let instrText='';
 let instrArchive=[];
 
@@ -236,6 +355,13 @@ function renderForm(){
   h+=`<div class="swap-row"><div class="swap-label">Fuel Type</div><select class="field-select" onchange="swapData.fuel=this.value">${FUEL_TYPES.map(f=>`<option value="${f}"${swapData.fuel===f?' selected':''}>${f}</option>`).join('')}</select></div>`;
   h+=`<div class="swap-row"><div class="swap-label">Build Type</div><div class="class-grid">${BUILD_TYPES.map(bt=>`<div class="class-chip${swapData.buildType===bt?' selected':''}" onclick="pickBuild('${bt}',this)">${bt}</div>`).join('')}</div></div>`;
   h+=`<div class="swap-row"><div class="swap-label">Target Class</div><div class="class-grid">${CLASSES.map(c=>`<div class="class-chip${swapData.targetClass===c.id?' selected':''}" onclick="pickClass('${c.id}',this)">${c.id}<span class="class-range">${c.range}</span></div>`).join('')}</div></div>`;
+
+  // FIX #4: Wheel/Tire dimensions — front & rear
+  h+=`<div class="swap-row"><div class="swap-label">Wheel / Tire Dimensions</div>`;
+  h+=`<div class="tire-row"><span class="tire-label">Front</span><input class="tire-input" placeholder="215" value="${swapData.f_tire_w}" oninput="swapData.f_tire_w=this.value" inputmode="numeric"><span class="tire-sep">/</span><input class="tire-input" placeholder="40" value="${swapData.f_tire_ar}" oninput="swapData.f_tire_ar=this.value" inputmode="numeric"><span class="tire-sep">/</span><input class="tire-input" placeholder="18" value="${swapData.f_tire_rim}" oninput="swapData.f_tire_rim=this.value" inputmode="numeric"></div>`;
+  h+=`<div class="tire-row"><span class="tire-label">Rear</span><input class="tire-input" placeholder="245" value="${swapData.r_tire_w}" oninput="swapData.r_tire_w=this.value" inputmode="numeric"><span class="tire-sep">/</span><input class="tire-input" placeholder="40" value="${swapData.r_tire_ar}" oninput="swapData.r_tire_ar=this.value" inputmode="numeric"><span class="tire-sep">/</span><input class="tire-input" placeholder="18" value="${swapData.r_tire_rim}" oninput="swapData.r_tire_rim=this.value" inputmode="numeric"></div>`;
+  h+=`</div>`;
+
   // Performance - hide for drift/gymkhana
   if(!isDriftOrGymkhana()){
     h+=`<div class="swap-row"><div class="swap-label">Performance</div><div class="perf-grid">`;
@@ -248,7 +374,7 @@ function renderForm(){
 
   // ─── AI INSTRUCTION BLOCK ───
   h+=`<div class="category" id="cat-instr"><div class="category-header" onclick="toggleCat('instr')"><span class="category-title">AI Instructions</span><span class="category-chevron">▼</span></div><div class="category-body">`;
-  h+=`<textarea class="instr-area" id="instrArea" placeholder="Paste your Gemini instruction block here...">${instrText}</textarea>`;
+  h+=`<textarea class="instr-area" id="instrArea" placeholder="Paste your Gemini instruction block here..." oninput="instrText=this.value">${instrText}</textarea>`;
   h+=`<div class="instr-actions"><button class="instr-btn instr-btn-copy" onclick="copyInstr()">Copy Instructions</button><button class="instr-btn instr-btn-archive" onclick="archiveInstr()">Archive</button><button class="instr-btn instr-btn-restore" onclick="toggleArchiveList()">History</button></div>`;
   h+=`<div class="archive-list" id="archiveList" style="display:none">${instrArchive.map((a,i)=>`<div class="archive-item"><span>v${instrArchive.length-i} — ${a.date}</span><button onclick="restoreInstr(${i})">Restore</button></div>`).join('')}</div>`;
   h+=`</div></div>`;
@@ -256,16 +382,55 @@ function renderForm(){
   // ─── TOOLBAR ───
   h+=`<div class="toolbar"><button class="toolbar-btn" onclick="toggleAll(true)">Expand All</button><button class="toolbar-btn" onclick="toggleAll(false)">Collapse</button></div>`;
 
-  // ─── TUNING FIELDS with +/- buttons ───
+  // ─── TUNING FIELDS ───
   layout.forEach((cat,ci)=>{
     h+=`<div class="category open" id="cat-${ci}"><div class="category-header" onclick="toggleCat(${ci})"><span class="category-title">${cat.name}</span><span class="category-chevron">▼</span></div><div class="category-body">`;
-    cat.fields.forEach(f=>{
-      const sk=currentDrive+'_'+f.k;const val=values[sk]||'';const isNA=val==='N/A';
-      h+=`<div class="field-row"><span class="field-label">${f.l}</span><button class="na-btn${isNA?' active':''}" onclick="toggleNA('${sk}',this)">N/A</button><button class="pm-btn" onclick="nudge('${sk}',-1)">−</button><input class="field-input${isNA?' is-na':''}" type="text" inputmode="decimal" placeholder="—" data-key="${sk}" value="${val}" ${isNA?'readonly':''} oninput="onInput(this)" tabindex="0"><button class="pm-btn" onclick="nudge('${sk}',1)">+</button><span class="field-unit">${f.u}</span></div>`;
-    });
+
+    if(cat.special==='trans'){
+      // FIX #8: Final Drive row with Min / Current / Max
+      const fdMin=currentDrive+'_final_drive_min';
+      const fdCur=currentDrive+'_final_drive';
+      const fdMax=currentDrive+'_final_drive_max';
+      const fdMinVal=values[fdMin]||'';const fdCurVal=values[fdCur]||'';const fdMaxVal=values[fdMax]||'';
+      const fdMinNA=fdMinVal==='N/A';const fdCurNA=fdCurVal==='N/A';const fdMaxNA=fdMaxVal==='N/A';
+      const fdMinLk=fdMinVal==='Locked';const fdCurLk=fdCurVal==='Locked';const fdMaxLk=fdMaxVal==='Locked';
+      h+=`<div class="fd-row">`;
+      h+=`<span class="fd-label">Final Drive</span>`;
+      h+=`<div class="fd-group"><span class="fd-mini-label">Min</span><input class="fd-input${fdMinNA?' is-na':''}${fdMinLk?' is-locked':''}" type="text" inputmode="decimal" placeholder="—" data-key="${fdMin}" value="${fdMinVal}" ${(fdMinNA||fdMinLk)?'readonly':''} oninput="onInput(this)"></div>`;
+      h+=`<div class="fd-group"><span class="fd-mini-label">Cur</span><input class="fd-input${fdCurNA?' is-na':''}${fdCurLk?' is-locked':''}" type="text" inputmode="decimal" placeholder="—" data-key="${fdCur}" value="${fdCurVal}" ${(fdCurNA||fdCurLk)?'readonly':''} oninput="onInput(this)"></div>`;
+      h+=`<div class="fd-group"><span class="fd-mini-label">Max</span><input class="fd-input${fdMaxNA?' is-na':''}${fdMaxLk?' is-locked':''}" type="text" inputmode="decimal" placeholder="—" data-key="${fdMax}" value="${fdMaxVal}" ${(fdMaxNA||fdMaxLk)?'readonly':''} oninput="onInput(this)"></div>`;
+      h+=`</div>`;
+
+      // Remaining gear fields (skip final_drive fields)
+      TRANS_GEARS.forEach(f=>{
+        const sk=currentDrive+'_'+f.k;const val=values[sk]||'';const isNA=val==='N/A';const isLk=val==='Locked';
+        h+=renderFieldRow(f,sk,val,isNA,isLk);
+      });
+    } else {
+      cat.fields.forEach(f=>{
+        const sk=currentDrive+'_'+f.k;const val=values[sk]||'';const isNA=val==='N/A';const isLk=val==='Locked';
+        h+=renderFieldRow(f,sk,val,isNA,isLk);
+      });
+    }
     h+=`</div></div>`;
   });
   el.innerHTML=h;updateProgress();setupNav();
+}
+
+// FIX #5: +/- button toggles sign. FIX #7: lock button
+function renderFieldRow(f,sk,val,isNA,isLk){
+  let h=`<div class="field-row"><span class="field-label">${f.l}</span>`;
+  // Lock button (FIX #7)
+  h+=`<button class="lock-btn${isLk?' active':''}" onclick="toggleLock('${sk}',this)" title="Locked (mod not unlocked)">🔒</button>`;
+  // N/A button
+  h+=`<button class="na-btn${isNA?' active':''}" onclick="toggleNA('${sk}',this)">N/A</button>`;
+  // FIX #5: +/- is now a sign toggle button
+  if(f.sign){
+    h+=`<button class="pm-btn" onclick="toggleSign('${sk}')" title="Toggle positive/negative">±</button>`;
+  }
+  h+=`<input class="field-input${isNA?' is-na':''}${isLk?' is-locked':''}" type="text" inputmode="decimal" placeholder="—" data-key="${sk}" value="${val}" ${(isNA||isLk)?'readonly':''} oninput="onInput(this)" tabindex="0">`;
+  h+=`<span class="field-unit">${f.u}</span></div>`;
+  return h;
 }
 
 // ═══ INTERACTION HANDLERS ═══
@@ -289,23 +454,49 @@ function togglePerfNA(field,el){
   renderForm();
 }
 function toggleNA(sk,btn){
-  const input=btn.parentElement.querySelector('.field-input');
+  const row=btn.parentElement;
+  const input=row.querySelector('.field-input') || row.querySelector('.fd-input');
   if(values[sk]==='N/A'){delete values[sk];input.value='';input.readOnly=false;input.classList.remove('is-na');btn.classList.remove('active');}
-  else{values[sk]='N/A';input.value='N/A';input.readOnly=true;input.classList.add('is-na');btn.classList.add('active');}
+  else{
+    // Clear locked state if switching to N/A
+    values[sk]='N/A';input.value='N/A';input.readOnly=true;input.classList.add('is-na');input.classList.remove('is-locked');btn.classList.add('active');
+    // Deactivate lock button if active
+    const lockBtn=row.querySelector('.lock-btn');if(lockBtn)lockBtn.classList.remove('active');
+  }
   updateProgress();
 }
-function nudge(sk,dir){
-  if(values[sk]==='N/A')return;
+// FIX #7: Toggle lock state
+function toggleLock(sk,btn){
+  const row=btn.parentElement;
+  const input=row.querySelector('.field-input') || row.querySelector('.fd-input');
+  if(values[sk]==='Locked'){delete values[sk];input.value='';input.readOnly=false;input.classList.remove('is-locked');btn.classList.remove('active');}
+  else{
+    values[sk]='Locked';input.value='Locked';input.readOnly=true;input.classList.add('is-locked');input.classList.remove('is-na');btn.classList.add('active');
+    // Deactivate N/A button if active
+    const naBtn=row.querySelector('.na-btn');if(naBtn)naBtn.classList.remove('active');
+  }
+  updateProgress();
+}
+// FIX #5: Toggle sign (positive/negative)
+function toggleSign(sk){
+  if(values[sk]==='N/A'||values[sk]==='Locked')return;
   const inp=document.querySelector(`[data-key="${sk}"]`);
-  let v=parseFloat(inp.value)||0;
-  // Smart step: integers stay integer, decimals step by 0.1
-  const step=inp.value.includes('.')?0.1:1;
-  v=Math.round((v+dir*step)*100)/100;
+  let v=parseFloat(inp.value);
+  if(isNaN(v)||v===0)return;
+  v=-v;
+  v=Math.round(v*1000)/1000;
   inp.value=v;values[sk]=String(v);updateProgress();
 }
+
 function onInput(el){values[el.dataset.key]=el.value;updateProgress();}
 function saveCurrentValues(){
-  document.querySelectorAll('.field-input').forEach(inp=>{const k=inp.dataset.key;if(inp.value&&inp.value!=='')values[k]=inp.value;else if(values[k]!=='N/A')delete values[k];});
+  document.querySelectorAll('.field-input,.fd-input').forEach(inp=>{
+    const k=inp.dataset.key;
+    if(!k)return;
+    if(inp.value&&inp.value!=='')values[k]=inp.value;
+    else if(values[k]!=='N/A'&&values[k]!=='Locked')delete values[k];
+  });
+  // FIX #1: save instruction text
   const ta=document.getElementById('instrArea');if(ta)instrText=ta.value;
 }
 function updateProgress(){
@@ -318,16 +509,15 @@ function updateProgress(){
 function toggleCat(i){document.getElementById('cat-'+i).classList.toggle('open');}
 function toggleAll(open){document.querySelectorAll('.category').forEach(c=>{if(open)c.classList.add('open');else c.classList.remove('open')});}
 
-// ═══ KEYBOARD NAV — hide action bar, proper tabindex ═══
+// ═══ KEYBOARD NAV ═══
 function setupNav(){
   const actionBar=document.querySelector('.action-bar');
   const isInp=el=>el&&(el.matches('input:not([readonly]),textarea,select'));
   document.addEventListener('focusin',e=>{if(isInp(e.target))actionBar.classList.add('hidden');});
   document.addEventListener('focusout',e=>{setTimeout(()=>{if(!isInp(document.activeElement))actionBar.classList.remove('hidden');},150);});
   if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{if(isInp(document.activeElement))actionBar.classList.add('hidden');else actionBar.classList.remove('hidden');});}
-  // Set sequential tabindex on all field inputs for iOS arrows
   let idx=1;
-  document.querySelectorAll('.field-input,.perf-input,.custom-input,.instr-area').forEach(inp=>{inp.setAttribute('tabindex',idx++);});
+  document.querySelectorAll('.field-input,.fd-input,.perf-input,.custom-input,.instr-area').forEach(inp=>{inp.setAttribute('tabindex',idx++);});
 }
 
 // ═══ INSTRUCTION BLOCK ═══
@@ -349,11 +539,19 @@ function restoreInstr(i){instrText=instrArchive[i].text;renderForm();showToast('
 function getCarName(){return swapData.car==='Custom'?(swapData.car_custom||'Custom'):swapData.car;}
 function getEngineName(){return swapData.engine==='Custom'?(swapData.engine_custom||'Custom'):swapData.engine;}
 function getTransName(){return swapData.trans==='Custom'?(swapData.trans_custom||'Custom'):swapData.trans;}
+function getTireDim(prefix){
+  const w=swapData[prefix+'_tire_w'],ar=swapData[prefix+'_tire_ar'],rim=swapData[prefix+'_tire_rim'];
+  if(!w&&!ar&&!rim)return '';
+  return `${w||'—'}/${ar||'—'}/${rim||'—'}`;
+}
 
 function buildCSV(){
   saveCurrentValues();const t=EXPORT_TEMPLATES[currentDrive];
   let csv=t.prompt+',,,\n,,,\n';
   csv+=`Vehicle Setup,,,\nSetup,Car,${getCarName()},\nSetup,Engine Swap,${getEngineName()},\nSetup,Transmission Swap,${getTransName()},\nSetup,Body,${swapData.body},\nSetup,Tire Compound,${swapData.tires},\nSetup,Fuel Type,${swapData.fuel},\nSetup,Build Type,${swapData.buildType},\nSetup,Target Class,${swapData.targetClass},\n`;
+  // Tire dimensions
+  const ft=getTireDim('f'),rt=getTireDim('r');
+  if(ft||rt){csv+=`Setup,Front Tire Dimensions,${ft},\nSetup,Rear Tire Dimensions,${rt},\n`;}
   if(!isDriftOrGymkhana()){
     const lNote=swapData.listed_note?` (${swapData.listed_note})`:'';
     csv+=`Setup,Listed Top Speed,${swapData.listed_speed}${lNote},mph\nSetup,Actual Top Speed,${swapData.actual_speed_na?'N/A':swapData.actual_speed},mph\nSetup,0-60 Time,${swapData.zero_sixty_na?'N/A':swapData.zero_sixty},s\n`;
@@ -365,6 +563,7 @@ function buildCSV(){
 
 function buildFullExport(){
   let out='';
+  // FIX #1: include instructions in full export
   if(instrText.trim())out+=instrText.trim()+'\n\n';
   out+=buildCSV();
   return out;
@@ -375,17 +574,20 @@ function fallbackCopy(text){const ta=document.createElement('textarea');ta.value
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500);}
 
 function copyToClipboard(){
+  saveCurrentValues(); // FIX #1: ensure instrText is captured before copy
   const full=buildFullExport();
   navigator.clipboard.writeText(full).then(()=>showToast('Copied!')).catch(()=>{fallbackCopy(full);showToast('Copied!');});
 }
 
+// FIX #2: Export — ensure saveCurrentValues runs and file downloads properly
 function exportCSV(){
+  saveCurrentValues();
   const full=buildFullExport();
   const label=currentDrive.toUpperCase();
   const fn=`tune_${label}_${new Date().toISOString().slice(0,10)}.csv`;
   // Use share API on mobile
   if(navigator.share){
-    const file=new File([full],fn,{type:'text/plain'});
+    const file=new File([full],fn,{type:'text/csv'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){
       navigator.share({title:`TuneSpec ${label}`,files:[file]}).then(()=>showToast('Shared!')).catch(()=>showToast('Share cancelled'));
       return;
@@ -394,15 +596,28 @@ function exportCSV(){
     navigator.share({title:`TuneSpec ${label}`,text:full}).then(()=>showToast('Shared!')).catch(()=>showToast('Share cancelled'));
     return;
   }
-  // Desktop fallback
-  const blob=new Blob([full],{type:'text/csv'});const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=fn;a.click();URL.revokeObjectURL(url);showToast('Exported!');
+  // Desktop fallback — force download
+  const blob=new Blob([full],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),100);
+  showToast('Exported!');
 }
 
-function clearAll(){
-  if(!confirm('Clear ALL data for '+currentDrive.toUpperCase()+'?'))return;
+// FIX #3: Clear with double-check confirmation
+function showClearConfirm(){
+  document.getElementById('confirmMsg').textContent=`This will erase all tuning values for ${currentDrive.toUpperCase()}. This cannot be undone.`;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+function hideClearConfirm(){document.getElementById('confirmOverlay').classList.remove('show');}
+function confirmClear(){
+  hideClearConfirm();
   FORM_LAYOUTS[currentDrive].forEach(c=>c.fields.forEach(f=>delete values[currentDrive+'_'+f.k]));
-  swapData={car:'',car_custom:'',engine:'Stock',engine_custom:'',trans:'Stock',trans_custom:'',body:'Stock',tires:'Racing+',fuel:'Racing (Sport)',buildType:'',targetClass:'',listed_speed:'',actual_speed:'',actual_speed_na:false,zero_sixty:'',zero_sixty_na:false,listed_note:''};
+  swapData={car:'',car_custom:'',engine:'Stock',engine_custom:'',trans:'Stock',trans_custom:'',body:'Stock',tires:'Racing+',fuel:'Racing (Sport)',buildType:'',targetClass:'',listed_speed:'',actual_speed:'',actual_speed_na:false,zero_sixty:'',zero_sixty_na:false,listed_note:'',
+    f_tire_w:'',f_tire_ar:'',f_tire_rim:'',
+    r_tire_w:'',r_tire_ar:'',r_tire_rim:''
+  };
+  instrText='';
   renderForm();showToast('Cleared');
 }
 
